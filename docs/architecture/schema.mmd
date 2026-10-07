@@ -1,0 +1,51 @@
+erDiagram
+    users ||--o| borrowers : has
+    borrowers ||--o{ loans : borrows
+    books ||--o{ loans : loaned_in
+    books ||--o{ book_authors : has
+    authors ||--o{ book_authors : writes
+    books ||--o{ book_genres : categorized_by
+    genres ||--o{ book_genres : classifies
+
+    users {
+        int id PK "existing serial"
+        string email UK "required"
+        string name "nullable"
+        timestamp created_at "required default NOW()"
+    }
+    borrowers {
+        int id PK "serial"
+        int user_id FK, UK "required references users.id"
+        string card_number UK "required"
+        timestamp registered_at "required default NOW()"
+    }
+    books {
+        int id PK "serial"
+        string isbn UK "required"
+        string title "required"
+        int published_year "nullable"
+    }
+    authors {
+        int id PK "serial"
+        string name "required not unique"
+    }
+    genres {
+        int id PK "serial"
+        string name UK "required"
+    }
+    book_authors {
+        int book_id PK, FK "required composite PK"
+        int author_id PK, FK "required composite PK"
+    }
+    book_genres {
+        int book_id PK, FK "required composite PK"
+        int genre_id PK, FK "required composite PK"
+    }
+    loans {
+        int id PK "serial"
+        int borrower_id FK "required"
+        int book_id FK "required"
+        timestamp borrowed_at "required default NOW()"
+        timestamp due_at "required at or after borrowed_at"
+        timestamp returned_at "nullable at or after borrowed_at"
+    }
